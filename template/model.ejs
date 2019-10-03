@@ -1,0 +1,32 @@
+<%_ childEntities.reverse().forEach(function(childEntity) { _%>
+<%- childEntity _%>
+<%_ }); _%>
+
+<% if (root) { %>export default <% } %>class <%= schema.title %> {
+  constructor(attributes) {
+    <%_ Object.keys(schema.properties).forEach(function(prop) { _%>
+    this._<%- _.camelCase(prop) %> = attributes.<%- _.camelCase(prop) %>;
+    <%_ }) _%>
+  }
+
+  static fromJSON(json) {
+    return new <%= schema.title %>({
+<%_ Object.keys(schema.properties).forEach(function(prop) { _%>
+  <%_ var classAlias = root ? '' : schema.title _%>
+  <%_ if (schema.properties[prop].type === 'object') { _%>
+      <%- _.camelCase(prop) %>: <%- classAlias + _.upperFirst(_.camelCase(prop)) %>.fromJSON(json.<%- prop %>),
+  <%_ } else if (schema.properties[prop].type === 'array') { _%>
+      <%- _.camelCase(prop) %>: json.<%- prop %>.map(item => <%- classAlias + _.upperFirst(_.camelCase(singular(prop))) %>.fromJSON(item)), %>
+  <%_ } else { _%>
+      <%- _.camelCase(prop) %>: json.<%- prop %>,
+  <%_ } _%>
+<%_ }) _%>
+    });
+  }
+  <%_ Object.keys(schema.properties).forEach(function(prop) { _%>
+
+  get <%- _.camelCase(prop) %>() {
+    return this._<%- _.camelCase(prop) %>;
+  }
+  <%_ }) _%>
+}
