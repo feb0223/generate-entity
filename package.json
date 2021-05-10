@@ -10,7 +10,7 @@
   "dependencies": {
     "ejs": "^2.5.8",
     "generate-schema": "^2.6.0",
-    "lodash": "^4.17.5",
+    "lodash": "^4.17.21",
     "mkdirp": "^0.5.1",
     "pluralize": "^7.0.0",
     "vue": "^2.5.13",
